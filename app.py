@@ -8,6 +8,11 @@ app = Flask(__name__)
 # by the Facebook App that will be created.
 PAT = ''
 
+
+@app.route('/testing', methods=['GET'])
+def handle_verification():
+  return "All good.."
+
 @app.route('/', methods=['GET'])
 def handle_verification():
   print "Handling Verification."
