@@ -1,22 +1,24 @@
 from flask import Flask, request
 import json
 import requests
+import os
 
 app = Flask(__name__)
 
-# This needs to be filled with the Page Access Token that will be provided
-# by the Facebook App that will be created.
-PAT = ''
+WEBHOOK_SECRET = COMPRESS_OFFLINE = os.environ.get('WEBHOOK_SECRET','')
+ACCESS_TOKEN = os.environ.get('ACCESS_TOKEN','')
+
+CLIENT_ACCESS_TOKEN = os.environ.get('CLIENT_ACCESS_TOKEN','')
 
 
 @app.route('/testing', methods=['GET'])
-def handle_verification():
+def testing_function():
   return "All good.."
 
 @app.route('/', methods=['GET'])
 def handle_verification():
   print "Handling Verification."
-  if request.args.get('hub.verify_token', '') == 'my_voice_is_my_password_verify_me':
+  if request.args.get('hub.verify_token', '') == WEBHOOK_SECRET :
     print "Verification successful!"
     return request.args.get('hub.challenge', '')
   else:
@@ -30,7 +32,7 @@ def handle_messages():
   print payload
   for sender, message in messaging_events(payload):
     print "Incoming from %s: %s" % (sender, message)
-    send_message(PAT, sender, message)
+    send_message(ACCESS_TOKEN, sender, message)
   return "ok"
 
 def messaging_events(payload):
